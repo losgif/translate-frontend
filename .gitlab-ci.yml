@@ -1,0 +1,39 @@
+image: node:lts-alpine3.9
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  tags:
+    - build
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist
+
+deploy_prod:
+  image: alpine
+  stage: deploy
+  tags:
+    - deploy
+  only:
+    - master
+    - tags
+  script:
+    - echo "http://mirrors.aliyun.com/alpine/v3.9/main/" > /etc/apk/repositories
+    - apk add --no-cache rsync openssh
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PROD_PRIVATE_KEY" >> ~/.ssh/id_dsa
+    - chmod 600 ~/.ssh/id_dsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - rsync -rav --exclude '.git' dist/ "$SERVER_PROD_HOST:$SERVER_PROD_PATH"
+    - ssh root@"$SERVER_PROD_HOST" "chmod -R 777 $SERVER_PROD_PATH"
