@@ -91,9 +91,6 @@
                     <a-col>
                       <div v-html="word['english_chinese_interpretation']" class="english-chinese-interpretation"></div>
                     </a-col>
-                    <a-col v-if="word['reference_example_sentences']">
-                      <div v-html="'例句：' + word['reference_example_sentences']" class="reference-example-sentences"></div>
-                    </a-col>
                   </a-row>
                 </a-col>
                 <a-col span="8" v-if="word['word']">
@@ -187,26 +184,49 @@ export default {
       ]
 
       axios.post('/api/translate/analyze', {
-        text: this.originalText
+        text: this.originalText,
+        force: true
       }).then(({ data }) => {
-        if (data.code === 200) {
-          this.actionState = true
-          this.words = data.data.words
-          this.originalText = data.data.text
+        this.actionState = true
+        this.words = data.data.words
+        this.originalText = data.data.text
 
-          for (let i = 0; i < this.words.length; i++) {
-            this.words[i].choice = false
-          }
+        for (let i = 0; i < this.words.length; i++) {
+          this.words[i].choice = false
+        }
+      }).catch((err) => {
+        if (err.response.data.code === 403) {
+          this.$confirm({
+            title: '⚠系统警告',
+            content: err.response.data.message,
+            cancelText: '关闭',
+            okText: '继续操作',
+            onOk: () => {
+              return axios.post('/api/translate/analyze', {
+                text: this.originalText,
+                force: false
+              }).then(({ data }) => {
+                if (data.code === 200) {
+                  this.actionState = true
+                  this.words = data.data.words
+                  this.originalText = data.data.text
+
+                  for (let i = 0; i < this.words.length; i++) {
+                    this.words[i].choice = false
+                  }
+                } else {
+                  this.words = []
+
+                  this.$message.error(data.message)
+                }
+              })
+            }
+          })
         } else {
           this.words = []
 
-          this.$message.error(data.message)
+          this.$message.error(err.response.data.message)
         }
-      }).catch((err) => {
-        console.log(err)
-        this.words = []
-
-        this.$message.error(err.response.data.message)
       }).finally(() => {
         this.loading = false
       })
@@ -366,18 +386,5 @@ export default {
 
   .english-chinese-interpretation >>> #wordm{
     font-size: 0.2em !important;
-  }
-
-  .reference-example-sentences {
-    margin-right: 0.5em;
-    font-size: 0.8em;
-  }
-
-  .reference-example-sentences >>> div {
-    font-size: 0.2em !important;
-  }
-
-  .reference-example-sentences >>> a {
-    display: none;
   }
 </style>
