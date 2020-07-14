@@ -13,8 +13,8 @@
           <div v-html="original_text"></div>
         </div>
         <a-alert message="单词精析" style="margin-bottom: 10px; margin-top: 50px"></a-alert>
-        <a-list size="small" :data-source="words" :locale="{emptyText: '暂无数据'}">
-          <a-list-item slot="renderItem" class="translate-list-item-anal" slot-scope="word" v-if="word.choice" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-right: 0.5rem; border: none;margin-bottom: 10px;">
+        <a-list size="small" :data-source="words" :locale="{emptyText: '暂无数据'}" bordered>
+          <a-list-item slot="renderItem" class="translate-list-item-anal" slot-scope="word" v-if="word.choice" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-right: 0.5rem;">
             <a-row type="flex" align="middle" justify="start" style="width: 100%">
               <a-col v-if="word['word']">
                 <div style="margin-right: 0.5em; display: inline">
