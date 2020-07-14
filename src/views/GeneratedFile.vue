@@ -51,7 +51,7 @@
         </div>
         <a-list size="small" :data-source="words" :locale="{emptyText: '暂无数据'}">
           <a-list-item slot="renderItem" class="translate-list-item" slot-scope="word" v-if="!word.choice" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-left: 0.5rem; padding-right: 0.5rem;">
-            <a-row type="flex" align="middle" justify="start" style="width: 100%">
+            <a-row type="flex" align="middle" justify="start" style="width: 100%; line-height: 160%">
               <a-col v-if="word['word']">
                 <div style="margin-right: 0.5em; display: inline">
                   <span style="font-weight: 800; font-size: 14px; color: #335699; font-family: 'Times New Roman', Times, serif;">{{ word['word'] }}</span>
@@ -88,7 +88,6 @@ export default {
   },
   mounted () {
     this.getGenerate()
-    console.log(this.id)
   },
   methods: {
     getGenerate () {
@@ -101,7 +100,7 @@ export default {
 
           let originalText = data.data.original_text
           for (const word of this.words) {
-            const reg = new RegExp(' (' + word.word + '{1,})[ ,.!?:]', 'i')
+            const reg = new RegExp(' (' + word.word + '{1,})[ ,.!?:]', 'gi')
             originalText = originalText.replace(reg, ' <b style="color: #981d13; font-weight: bold;">$1</b> ')
 
             if (word.reference_example_sentences) {
@@ -165,7 +164,7 @@ export default {
   }
 
   .reference-example-sentences >>> span {
-    font-size: 12px !important;
+    font-size: 13px !important;
   }
 
   .reference-example-sentences >>> a {
