@@ -104,10 +104,12 @@ export default {
             const reg = new RegExp(' (' + word.word + '{1,})[ ,.!?:]', 'i')
             originalText = originalText.replace(reg, ' <b style="color: #981d13; font-weight: bold;">$1</b> ')
 
-            const re = /<div style="line-height:150%;margin-bottom:10px;font-size:14px;">1\.(.*?)<\/div>/
-            let exampleSentencesList = word.reference_example_sentences.split(re)
-            exampleSentencesList = exampleSentencesList[1].split('<br>')
-            word.reference_example_sentences = "<span style='color: #2a6788; font-family: \"Times New Roman\", Times, serif;'>" + exampleSentencesList[0] + '</span>' + exampleSentencesList[1]
+            if (word.reference_example_sentences) {
+              const re = /<div style="line-height:150%;margin-bottom:10px;font-size:14px;">1\.(.*?)<\/div>/
+              let exampleSentencesList = word.reference_example_sentences.split(re)
+              exampleSentencesList = exampleSentencesList[1].split('<br>')
+              word.reference_example_sentences = "<span style='color: #2a6788; font-family: \"Times New Roman\", Times, serif;'>" + exampleSentencesList[0] + '</span>' + exampleSentencesList[1]
+            }
           }
 
           this.original_text = originalText
