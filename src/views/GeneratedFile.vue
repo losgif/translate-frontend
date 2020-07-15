@@ -9,7 +9,7 @@
         <div style="margin-top: 2rem; margin-bottom: 2rem">
           <img :src="image" :alt="name" height="200px" width="100%"/>
         </div>
-        <div style="font-size: 16px; font-family: 'Times New Roman', Times, serif; line-height: 2.5rem; font-weight: 500; color: #121212;">
+        <div style="font-size: 16px; font-family: 'Times New Roman', Times, serif; line-height: 2rem; font-weight: 500; color: #121212;">
           <div v-html="original_text"></div>
         </div>
         <a-alert message="单词精析" style="margin-bottom: 10px; margin-top: 50px"></a-alert>
