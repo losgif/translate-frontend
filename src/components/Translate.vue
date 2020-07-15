@@ -66,7 +66,7 @@
           </quill-editor>
         </div>
       </a-col>
-      <a-col :xs="0" :sm="12" :md="12" :lg="12" :xl="12">
+      <a-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
         <div class="p-1">
           <a-list size="small" bordered :data-source="words" :locale="{emptyText: '暂无数据'}" :loading="loading">
             <a-list-item slot="renderItem" slot-scope="word, index" v-if="word.word">
