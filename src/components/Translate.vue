@@ -69,11 +69,11 @@
       <a-col :xs="0" :sm="12" :md="12" :lg="12" :xl="12">
         <div class="p-1">
           <a-list size="small" bordered :data-source="words" :locale="{emptyText: '暂无数据'}" :loading="loading">
-            <a-list-item slot="renderItem" slot-scope="word, index">
+            <a-list-item slot="renderItem" slot-scope="word, index" v-if="word.word">
               <a-row type="flex" align="middle" justify="space-between" style="width: 100%">
                 <a-col span="16">
                   <a-row type="flex" align="middle">
-                    <a-col v-if="word['word']">
+                    <a-col>
                       <div style="margin-right: 0.5em;">
                         <span style="font-weight: 800; font-size: 1.5em">{{ word['word'] }}</span>
                       </div>
@@ -88,12 +88,12 @@
                         <img src="http://img.kekenet.com/dict/image/sound.gif" alt="点击发音" @click="playSound(word['voice'])">
                       </div>
                     </a-col>
-                    <a-col>
+                    <a-col v-if="word['english_chinese_interpretation']">
                       <div v-html="word['english_chinese_interpretation']" class="english-chinese-interpretation"></div>
                     </a-col>
                   </a-row>
                 </a-col>
-                <a-col span="8" v-if="word['word']">
+                <a-col span="8" v-if="word.word !== '加载中...'">
                   <a-row type="flex" align="middle" justify="end">
                     <a-col>
                       <a-button
@@ -179,7 +179,7 @@ export default {
       this.loading = true
       this.words = [
         {
-          english_chinese_interpretation: '<span>加载中...</span>'
+          word: '加载中...'
         }
       ]
 
@@ -292,19 +292,6 @@ export default {
           return false
         }
       })
-      // this.$refs.ruleForm.validate(async (valid) => {
-      //   if (valid) {
-      //     await axios.post('/api/generate').then(({ data }) => {
-      //       this.token = data.data.token
-      //       this.domain = data.data.domain
-      //     }).catch(() => {
-      //       this.$message.error('上传失败！', 3)
-      //     })
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
     },
     getUploadToken () {
       return {

@@ -14,16 +14,16 @@
         </div>
         <a-alert message="单词精析" style="margin-bottom: 10px; margin-top: 50px"></a-alert>
         <a-list size="small" :data-source="words" :locale="{emptyText: '暂无数据'}" bordered>
-          <a-list-item slot="renderItem" class="translate-list-item-anal" slot-scope="word" v-if="word.choice" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-right: 0.5rem;">
+          <a-list-item slot="renderItem" class="translate-list-item-anal" slot-scope="word" v-if="word.choice && word.word" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-right: 0.5rem;">
             <a-row type="flex" align="middle" justify="start" style="width: 100%">
-              <a-col v-if="word['word']">
+              <a-col>
                 <div style="margin-right: 0.5em; display: inline">
                   <span style="font-weight: 800; font-size: 14px; color: #335699; font-family: 'Times New Roman', Times, serif;">{{ word['word'] }}</span>
                 </div>
-                <div style="margin-right: 0.5em; display: inline">
+                <div v-if="word['phonetic']" style="margin-right: 0.5em; display: inline">
                   <span style="font-size: 10px; color: #333" v-html="word['phonetic']"></span>
                 </div>
-                <div v-html="word['english_chinese_interpretation']" class="english-chinese-interpretation"></div>
+                <div v-if="word['english_chinese_interpretation']" v-html="word['english_chinese_interpretation']" class="english-chinese-interpretation"></div>
                 <div v-if="word['synonyms']" style="margin-right: 5px; font-size: 10px">
                   同义词：
                   <span v-html="word['synonyms']" class="synonyms"></span>
@@ -50,17 +50,17 @@
           />
         </div>
         <a-list size="small" :data-source="words" :locale="{emptyText: '暂无数据'}">
-          <a-list-item slot="renderItem" class="translate-list-item" slot-scope="word" v-if="!word.choice" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-left: 0.5rem; padding-right: 0.5rem;">
-            <a-row type="flex" align="middle" justify="start" style="width: 100%; line-height: 160%">
-              <a-col v-if="word['word']">
+          <a-list-item slot="renderItem" class="translate-list-item" slot-scope="word" v-if="!word.choice && word.word" style="padding-top: 0 !important; padding-bottom: 0 !important; padding-left: 0.5rem; padding-right: 0.5rem;">
+            <a-row type="flex" align="middle" justify="start" style="width: 100%; line-height: 175%">
+              <a-col>
                 <div style="margin-right: 0.5em; display: inline">
                   <span style="font-weight: 800; font-size: 14px; color: #335699; font-family: 'Times New Roman', Times, serif;">{{ word['word'] }}</span>
                 </div>
-                <div style="margin-right: 0.5em; display: inline">
+                <div v-if="word.phonetic" style="margin-right: 0.5em; display: inline">
                   <span style="font-size: 10px; color: #333" v-html="word['phonetic']"></span>
                 </div>
-                <span v-html="word['english_chinese_interpretation']" class="english-chinese-interpretation"></span>
-                <span v-html="word['reference_example_sentences']" class="reference-example-sentences"></span>
+                <span v-if="word.english_chinese_interpretation" v-html="word['english_chinese_interpretation']" class="english-chinese-interpretation"></span>
+                <span v-if="word.reference_example_sentences" v-html="word['reference_example_sentences']" class="reference-example-sentences"></span>
               </a-col>
             </a-row>
           </a-list-item>
@@ -100,8 +100,8 @@ export default {
 
           let originalText = data.data.original_text
           for (const word of this.words) {
-            const reg = new RegExp(' (' + word.word + '{1,})[ ,.!?:]', 'gi')
-            originalText = originalText.replace(reg, ' <b style="color: #981d13; font-weight: bold;">$1</b> ')
+            const reg = new RegExp(' (' + word.word + '{1,})([ ,.!?:\'])', 'gi')
+            originalText = originalText.replace(reg, ' <b style="color: #981d13; font-weight: bold;">$1</b>$2')
 
             if (word.reference_example_sentences) {
               const re = /<div style="line-height:150%;margin-bottom:10px;font-size:14px;">1\.(.*?)<\/div>/
